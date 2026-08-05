@@ -3,70 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vitrine 3D RA</title>
+    <title>Vitrine 3D - Realidade Aumentada</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: sans-serif;
-            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f6;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
         }
-        .container {
+        .canvas-container {
             width: 90%;
             max-width: 400px;
             height: 400px;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             overflow: hidden;
             position: relative;
         }
-        model-viewer {
+        canvas {
             width: 100%;
             height: 100%;
+            display: block;
         }
-        #ar-button {
-            background-color: #0071e3;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 10px 20px;
+        .btn-ar {
             position: absolute;
             bottom: 20px;
             right: 20px;
+            background-color: #0071e3;
+            color: #ffffff;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 24px;
             font-weight: bold;
+            font-size: 14px;
             cursor: pointer;
-            z-index: 999;
+            box-shadow: 0 4px 12px rgba(0,113,227,0.3);
+            text-decoration: none;
+            z-index: 10;
         }
-        h2 { text-align: center; margin-top: 15px; font-size: 18px; color: #333; }
+        h2 {
+            margin-top: 20px;
+            color: #333333;
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Usando o modelo oficial de patinho da Khronos, o mais leve e compatível do mundo -->
-<model-viewer 
-            src="https://jsdelivr.net" 
-            ar 
-            ar-modes="webxr scene-viewer quick-look" 
-            camera-controls 
-            shadow-intensity="1">
-            
-            <button slot="ar-button" id="ar-button">
-                👋 Ver no meu espaço (RA)
-            </button>
-            
-        </model-viewer>
+    <div class="canvas-container">
+        <!-- O Canvas onde o objeto 3D será renderizado via Three.js -->
+        <div id="renderer-container" style="width: 100%; height: 100%;"></div>
+        
+        <!-- Botão universal nativo para acionar a câmera em RA no Android/iOS -->
+        <a id="ar-link" rel="ar" href="Astronaut.glb" class="btn-ar">
+            👋 Ver no Espaço (RA)
+        </a>
     </div>
 
-    <h2>Protótipo de Teste RA</h2>
+    <h2>Protótipo 3D Funcional</h2>
 
-    <!-- O Script foi movido para o final do arquivo para garantir o carregamento do modelo -->
-    <script type="module" src="https://googleapis.com"></script>
+    <!-- Importação de Bibliotecas via CDN de Alta Disponibilidade (Sem bloqueio CORS) -->
+    <script src="https://cloudflare.com"></script>
+    <script src="https://jsdelivr.net"></script>
+    <script src="https://jsdelivr.net"></script>
+
+    <script>
+        // Configuração Básica do Cenário 3D
+        const container = document.getElementById('renderer-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xffffff);
+
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+        camera.position.set(0, 0, 3);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+        container.appendChild(renderer.domElement);
+
+        // Iluminação de Estúdio para evitar telas pretas/escuras
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+        dirLight.position.set(5, 10, 7);
+        scene.add(dirLight);
+
+        // Controles de Toque (Girar com o dedo)
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        // Carregamento do Arquivo Local Astronaut.glb que já está no seu GitHub
+        const loader = new THREE.GLTFLoader();
+        loader.load(
+            './Astronaut.glb',
+            function (gltf) {
+                const model = gltf.scene;
+                
+                // Centraliza e ajusta a escala do modelo automaticamente
+                const box = new THREE.Box3().setFromObject(model);
+                const size = box.getSize(new THREE.Vector3()).length();
+                const center = box.getCenter(new THREE.Vector3());
+                
+                model.position.x += (model.position.x - center.x);
+                model.position.y += (model.position.y - center.y);
+                model.position.z += (model.position.z - center.z);
+                
+                scene.add(model);
+            },
+            undefined,
+            function (error) {
+                console.error('Erro de carregamento:', error);
+            }
+        );
+
+        // Loop de Renderização Contínua
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Ajuste responsivo de tamanho caso o celular mude de posição
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        // Configuração para compatibilidade nativa de Realidade Aumentada (QuickLook iOS / SceneViewer Android)
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        const arLink = document.getElementById('ar-link');
+        if (isAndroid) {
+            arLink.href = 'intent://lennofreitas25.github.io/meu-site-ra/Astronaut.glb#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://google.com';
+        }
+    </script>
 </body>
 </html>
