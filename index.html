@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Provador e Vitrine 3D em Realidade Aumentada</title>
     
-    <!-- Importa os scripts do Model-Viewer (Tecnologia do Google para RA na Web) -->
+    <!-- Link atualizado da tecnologia do Google para carregar o modelo sem travar -->
     <script type="module" src="https://googleapis.com"></script>
     
     <style>
@@ -27,12 +27,11 @@
         }
         h1 { margin: 0; font-size: 20px; color: #333; }
         
-        /* Container do Visualizador 3D */
         .container-ra {
             width: 90%;
             max-width: 500px;
             height: 400px;
-            background-color: #fff;
+            background-color: #ddd; /* Fundo cinza para sabermos se o quadrado carregou */
             margin-top: 30px;
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -40,14 +39,12 @@
             position: relative;
         }
 
-        /* Configuração do componente de RA */
         model-viewer {
             width: 100%;
             height: 100%;
-            --poster-color: transparent;
+            background-color: #ffffff;
         }
 
-        /* Estilização do Botão de Ativar Câmera que o Google cria */
         #ar-button {
             background-color: #0071e3;
             border-radius: 8px;
@@ -55,13 +52,13 @@
             position: absolute;
             bottom: 16px;
             right: 16px;
-            transform: translateX(0);
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 14px;
             color: white;
             font-weight: 600;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+            z-index: 999;
         }
 
         .info-produto {
@@ -89,15 +86,10 @@
         <h1>Vitrine Interativa RA</h1>
     </header>
 
-    <!-- ÁREA DO MODELO 3D E REALIDADE AUMENTADA -->
     <div class="container-ra">
-        <!-- 
-          O atributo 'src' aponta para o modelo 3D. 
-          Para testar, usei um modelo público de exemplo do Google (uma cadeira espacial).
-          O atributo 'ar' ativa a função de Realidade Aumentada para celulares.
-        -->
+        <!-- Puxando o arquivo Astronaut.glb que você salvou na sua própria pasta -->
         <model-viewer 
-           src="Astronaut.glb" 
+            src="Astronaut.glb" 
             ar 
             ar-modes="webxr scene-viewer quick-look" 
             camera-controls 
@@ -108,14 +100,12 @@
                 👋 Ver no meu espaço (RA)
             </button>
             
-            
         </model-viewer>
     </div>
 
-    <!-- INFORMAÇÕES DO PRODUTO DO SEU CLIENTE -->
     <div class="info-produto">
         <h2>Protótipo de Produto 3D</h2>
-        <p>Gire o objeto com o dedo ou clique no botão acima para projetá-lo na sua sala usando a câmera do celular.</p>
+        <p>Gire o objeto com o dedo ou clique no botão acima para projetá-lo no ambiente usando a câmera.</p>
         <a href="#" class="btn-comprar">Comprar Agora</a>
     </div>
 
