@@ -57,24 +57,20 @@
 <body>
 
     <div class="canvas-container">
-        <!-- O Canvas onde o objeto 3D será renderizado via Three.js -->
         <div id="renderer-container" style="width: 100%; height: 100%;"></div>
         
-        <!-- Botão universal nativo para acionar a câmera em RA no Android/iOS -->
-        <a id="ar-link" rel="ar" href="Astronaut.glb" class="btn-ar">
+        <a id="ar-link" rel="ar" href="#" class="btn-ar">
             👋 Ver no Espaço (RA)
         </a>
     </div>
 
     <h2>Protótipo 3D Funcional</h2>
 
-    <!-- Importação de Bibliotecas via CDN de Alta Disponibilidade (Sem bloqueio CORS) -->
     <script src="https://cloudflare.com"></script>
     <script src="https://jsdelivr.net"></script>
     <script src="https://jsdelivr.net"></script>
 
     <script>
-        // Configuração Básica do Cenário 3D
         const container = document.getElementById('renderer-container');
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0xffffff);
@@ -88,7 +84,6 @@
         renderer.shadowMap.enabled = true;
         container.appendChild(renderer.domElement);
 
-        // Iluminação de Estúdio para evitar telas pretas/escuras
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
         scene.add(ambientLight);
 
@@ -96,18 +91,17 @@
         dirLight.position.set(5, 10, 7);
         scene.add(dirLight);
 
-        // Controles de Toque (Girar com o dedo)
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
 
-        // Carregamento do Arquivo Local Astronaut.glb que já está no seu GitHub
+        const modelUrl = 'https://githubusercontent.com';
+
         const loader = new THREE.GLTFLoader();
         loader.load(
-            './Astronaut.glb',
+            modelUrl,
             function (gltf) {
                 const model = gltf.scene;
                 
-                // Centraliza e ajusta a escala do modelo automaticamente
                 const box = new THREE.Box3().setFromObject(model);
                 const size = box.getSize(new THREE.Vector3()).length();
                 const center = box.getCenter(new THREE.Vector3());
@@ -124,7 +118,6 @@
             }
         );
 
-        // Loop de Renderização Contínua
         function animate() {
             requestAnimationFrame(animate);
             controls.update();
@@ -132,7 +125,6 @@
         }
         animate();
 
-        // Ajuste responsivo de tamanho caso o celular mude de posição
         window.addEventListener('resize', onWindowResize, false);
         function onWindowResize() {
             camera.aspect = container.clientWidth / container.clientHeight;
@@ -140,11 +132,13 @@
             renderer.setSize(container.clientWidth, container.clientHeight);
         }
 
-        // Configuração para compatibilidade nativa de Realidade Aumentada (QuickLook iOS / SceneViewer Android)
         const isAndroid = /Android/i.test(navigator.userAgent);
         const arLink = document.getElementById('ar-link');
+        
         if (isAndroid) {
-            arLink.href = 'intent://lennofreitas25.github.io/meu-site-ra/Astronaut.glb#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://google.com';
+            arLink.href = 'intent://://githubusercontent.com';
+        } else {
+            arLink.href = modelUrl;
         }
     </script>
 </body>
