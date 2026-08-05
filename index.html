@@ -3,97 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Provador e Vitrine 3D em Realidade Aumentada</title>
-    
-    <!-- Link atualizado da tecnologia do Google para carregar o modelo sem travar -->
-    <script type="module" src="https://googleapis.com"></script>
-    
+    <title>Vitrine 3D RA</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f7;
+            font-family: sans-serif;
+            background-color: #f0f0f0;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
-        header {
-            width: 100%;
-            background-color: #fff;
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        h1 { margin: 0; font-size: 20px; color: #333; }
-        
-        .container-ra {
+        .container {
             width: 90%;
-            max-width: 500px;
+            max-width: 400px;
             height: 400px;
-            background-color: #ddd; /* Fundo cinza para sabermos se o quadrado carregou */
-            margin-top: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             overflow: hidden;
             position: relative;
         }
-
         model-viewer {
             width: 100%;
             height: 100%;
-            background-color: #ffffff;
         }
-
         #ar-button {
             background-color: #0071e3;
-            border-radius: 8px;
-            border: none;
-            position: absolute;
-            bottom: 16px;
-            right: 16px;
-            padding: 12px 24px;
-            font-size: 14px;
             color: white;
-            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
             z-index: 999;
         }
-
-        .info-produto {
-            width: 90%;
-            max-width: 500px;
-            margin-top: 20px;
-            text-align: center;
-        }
-        .btn-comprar {
-            display: inline-block;
-            width: 100%;
-            background-color: #28a745;
-            color: white;
-            text-decoration: none;
-            padding: 15px 0;
-            border-radius: 8px;
-            font-weight: bold;
-            margin-top: 15px;
-        }
+        h2 { text-align: center; margin-top: 15px; font-size: 18px; color: #333; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Vitrine Interativa RA</h1>
-    </header>
-
-    <div class="container-ra">
-        <!-- Puxando o arquivo Astronaut.glb que você salvou na sua própria pasta -->
+    <div class="container">
+        <!-- Usando o modelo oficial de patinho da Khronos, o mais leve e compatível do mundo -->
         <model-viewer 
             src="https://githubusercontent.com" 
             ar 
             ar-modes="webxr scene-viewer quick-look" 
             camera-controls 
-            tone-mapping="neutral" 
             shadow-intensity="1">
             
             <button slot="ar-button" id="ar-button">
@@ -103,11 +64,9 @@
         </model-viewer>
     </div>
 
-    <div class="info-produto">
-        <h2>Protótipo de Produto 3D</h2>
-        <p>Gire o objeto com o dedo ou clique no botão acima para projetá-lo no ambiente usando a câmera.</p>
-        <a href="#" class="btn-comprar">Comprar Agora</a>
-    </div>
+    <h2>Protótipo de Teste RA</h2>
 
+    <!-- O Script foi movido para o final do arquivo para garantir o carregamento do modelo -->
+    <script type="module" src="https://googleapis.com"></script>
 </body>
 </html>
